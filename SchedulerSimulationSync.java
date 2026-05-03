@@ -30,7 +30,15 @@ class SharedResources {
     // TODO: Students will add synchronization mechanisms here
     // HINT: Use ReentrantLock for mutual exclusion
     // HINT: Use Semaphore for limiting concurrent access
+    // added lock for shared counters
+public static final java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock();
+
+// added lock for execution log
+public static final java.util.concurrent.locks.ReentrantLock logLock = new java.util.concurrent.locks.ReentrantLock();
     
+// semaphore for CPU access control
+public static final java.util.concurrent.Semaphore cpuSemaphore = new java.util.concurrent.Semaphore(1);
+
     public static int contextSwitchCount = 0;      // Shared counter - NEEDS PROTECTION!
     public static int completedProcessCount = 0;   // Shared counter - NEEDS PROTECTION!
     public static long totalWaitingTime = 0;       // Shared accumulator - NEEDS PROTECTION!
@@ -46,26 +54,27 @@ class SharedResources {
     public static void incrementContextSwitch() {
         // TODO: Protect this critical section with a lock
         // RACE CONDITION: Multiple threads might read and write simultaneously!
-        contextSwitchCount++;
+      contextSwitchCount++;
     }
     
     // Method to increment completed process counter
     public static void incrementCompletedProcess() {
         // TODO: Protect this critical section with a lock
-        completedProcessCount++;
+      completedProcessCount++;
     }
     
     // Method to add waiting time
     public static void addWaitingTime(long time) {
         // TODO: Protect this critical section with a lock
-        totalWaitingTime += time;
+      totalWaitingTime += time;
     }
     
     // Method to log execution
     public static void logExecution(String message) {
         // TODO: Protect this critical section with a lock
         // RACE CONDITION: ArrayList is not thread-safe!
-        executionLog.add(message);
+        logLock.lock();
+    executionLog.add(message);
     }
 }
 
@@ -94,8 +103,11 @@ class Process implements Runnable {
     public void run() {
         // TODO #3: Acquire CPU semaphore before executing
         // This ensures only allowed number of processes run simultaneously
+    
+    
         
         try {
+
             if (startTime == -1) {
                 startTime = System.currentTimeMillis();
             }
@@ -113,6 +125,8 @@ class Process implements Runnable {
             SharedResources.logExecution(name + " started quantum execution");
             
             try {
+               
+
                 int steps = 5;
                 int stepTime = runTime / steps;
                 
@@ -157,8 +171,10 @@ class Process implements Runnable {
         } finally {
             // TODO #4: Release CPU semaphore here
             // Always release in finally block to prevent deadlocks!
+        
         }
-    }
+        
+        }
     
     private String createProgressBar(int progress, int width) {
         int filled = (progress * width) / 100;
