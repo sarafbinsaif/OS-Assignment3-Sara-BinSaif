@@ -1,10 +1,10 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Random;
 
 // ANSI Color Codes for enhanced terminal output
 class Colors {
@@ -227,9 +227,12 @@ class Process implements Runnable {
 public class SchedulerSimulationSync {
     public static void main(String[] args) {
         // ⚠️ IMPORTANT: Put your student ID here
-        int studentID = 123456789;  // ← CHANGE THIS TO YOUR ACTUAL STUDENT ID
+        int studentID = 445052371;  // ← CHANGE THIS TO YOUR ACTUAL STUDENT ID
         
-        Random random = new Random(studentID);
+        Random random = new 
+        
+        
+        Random(studentID);
         
         int timeQuantum = 2000 + random.nextInt(4) * 1000;
         int numProcesses = 10 + random.nextInt(11);
